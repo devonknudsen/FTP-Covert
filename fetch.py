@@ -30,7 +30,7 @@ def permsToBinaryList(pList):
             pSet = pSet[3:]
 
     for i in range(len(pList[i])):
-        currPerm = pList[j]
+        currPerm = pList[i]
         for j in range(len(currPerm)):
             if(currPerm[j] == '-'):
                 currPerm[j] = '0'
