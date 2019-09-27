@@ -1,20 +1,25 @@
+# Persians: Sydney Anderson, Tram Doan, Devon Knudsen, Zackary Phillips, Promyse Ward, James Wilson
+# GitHub Repo URL: https://github.com/devonknudsen/FTP-Covert
+# Written in Python 3.7
 
 from ftplib import FTP
 
 METHOD = 10
-serverURL = 'jeangourd.com'
-username = 'anonymous'
-password = ''
+SERVER = 'jeangourd.com'
+USERNAME = 'anonymous'
+PASSWORD = ''
 
 # appends the file permissions to a list
 def retrieveFilePerms():
-    filePerms = []
-    if METHOD == 10:
-        ftp.cwd('10')
-    if METHOD == 7:
+    if(METHOD == 7):
         ftp.cwd('7')
+    if(METHOD == 10):
+        ftp.cwd('10')
+
+    filePerms = []
     ftp.retrlines('LIST', filePerms.append)
     filePerms = [filePerms[i][:10] for i in range(len(filePerms))]
+
     ftp.quit()
     
     return filePerms
@@ -27,7 +32,6 @@ def removeNoise(pList):
             newList.append(pSet)
 
     return newList
-            
 
 # converts each index of file permissions into binary
 def permsToBinaryList(pList):
@@ -37,7 +41,7 @@ def permsToBinaryList(pList):
 
     if(METHOD == 10):
         pList = ''.join(pList)
-        pList = [pList[i:i+7] for i in range(0, len(pList), 7)]
+        pList = [pList[i:i + 7] for i in range(0, len(pList), 7)]
 
     for i in range(len(pList)):
         currPerm = pList[i]
@@ -56,7 +60,8 @@ def binaryToText(pList):
     
     for i in range(len(pList)):
         asc = int(pList[i], 2)
-        # if: there's a backspace check
+
+        # if: there's a backspace
         if(asc == 8):
             completeMessage = completeMessage[:-1]
         else:
@@ -67,16 +72,16 @@ def binaryToText(pList):
 
 
 # MAIN
-ftp = FTP(serverURL)
-ftp.login(username, password)
+ftp = FTP(SERVER)
+ftp.login(USERNAME, PASSWORD)
 
 if(METHOD == 7):
     fPs = retrieveFilePerms()
-    fPs = removeNoise(fPs)
-    temp = permsToBinaryList(fPs)
-    print(binaryToText(temp))
+    refinedfPs = removeNoise(fPs)
+    binaryList = permsToBinaryList(refinedfPs)
+    print(binaryToText(binaryList))
 
 if(METHOD == 10):
     fPs = retrieveFilePerms()
-    temp = permsToBinaryList(fPs)
-    print(binaryToText(temp))
+    binaryList = permsToBinaryList(fPs)
+    print(binaryToText(binaryList))
